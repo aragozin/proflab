@@ -13,6 +13,8 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
+import info.ragozin.perflab.hazelagg.kryo.KryoConfigurer;
+
 public class HazelcastDemo {
 
     @Test
@@ -51,6 +53,9 @@ public class HazelcastDemo {
 
         Config cfg = new FileSystemXmlConfig("node-conf.xml");
         Config cfgL = new FileSystemXmlConfig("node-conf-lite.xml");
+        
+        KryoConfigurer.configure(cfg);
+        KryoConfigurer.configure(cfgL);
         
         HazelcastInstance node1 = Hazelcast.newHazelcastInstance(cfg);
         Thread.sleep(10);
