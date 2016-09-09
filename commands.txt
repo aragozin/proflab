@@ -1,0 +1,12 @@
+
+- Start thread sampling and produce dump file
+java -jar sjk.jar stcap -p PID -o std.dump
+
+- Generate flame graph from dump
+java -jar sjk.jar ssa -f std.dump --flame > flame.svg
+
+- Generate flame graph only for threads with name matching ".*cached.*" excluding traces with Unsafe.park call
+java -jar sjk.jar ssa -f std.dump -tn ".*cached.*" -tf **!**.Unsafe.park --flame > flame.svg
+
+- Report serialization proportion in traces containing CachedExecutorService frame excluding traces with Unsafe.park call
+java -jar sjk.jar ssa -f std.dump --categorize -nc Serializtion=**.ByteArrayObjectDataOutput.writeObject Rest=**CachedExecutorService!**.Unsafe.park
