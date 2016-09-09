@@ -1,7 +1,6 @@
 package info.ragozin.perflab.hazelagg;
 
 import java.io.FileNotFoundException;
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Random;
 
@@ -93,14 +92,14 @@ public class HazelcastDemo {
         System.out.println("Data generated");
         System.out.println("Data -> " + cacheL.aggregate(PositionAggregation.all(), new PositionAggregation(110)));
 
-        for(int i = 0; i != 1000; ++i) {
+        for(int i = 0; i != 100000; ++i) {
 
             String book = "B" + rnd.nextInt(100);
             long ts = rnd.nextInt(100);
 
             long time = System.currentTimeMillis();
             
-            Map<SliceKey, BigDecimal> data = cacheL.aggregate(PositionAggregation.sliceSupplier(SliceKey.book(book)), new PositionAggregation(ts));
+            Map<SliceKey, Double> data = cacheL.aggregate(PositionAggregation.sliceSupplier(SliceKey.book(book)), new PositionAggregation(ts));
             
             time = System.currentTimeMillis() - time;
             System.out.println("Book [" + book + "] at " + time + "ms -> " + data.size() + " slices");

@@ -1,7 +1,6 @@
 package info.ragozin.perflab.hazelagg;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +21,7 @@ import com.hazelcast.mapreduce.aggregation.impl.PredicateSupplier;
 import com.hazelcast.query.Predicate;
 
 @SuppressWarnings("serial")
-public class PositionAggregation implements Aggregation<PositionKey, Position, Map<SliceKey, BigDecimal>>, Serializable {
+public class PositionAggregation implements Aggregation<PositionKey, Position, Map<SliceKey, Double>>, Serializable {
 
     public static Supplier<PositionKey, Position, Position> all() {
         return Supplier.all();
@@ -44,24 +43,24 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
     
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Collator<Entry, Map<SliceKey, BigDecimal>> getCollator() {
-        return (Collator)new Collator<Map.Entry<SliceKey, Map<SliceKey,BigDecimal>>, Map<SliceKey,BigDecimal>>() {
+    public Collator<Entry, Map<SliceKey, Double>> getCollator() {
+        return (Collator)new Collator<Map.Entry<SliceKey, Map<SliceKey,Double>>, Map<SliceKey,Double>>() {
 
             @Override
-            public Map<SliceKey, BigDecimal> collate(Iterable<Entry<SliceKey, Map<SliceKey,BigDecimal>>> values) {
-                Map<SliceKey, BigDecimal> result = new HashMap<SliceKey, BigDecimal>();
-                for(Entry<SliceKey, Map<SliceKey,BigDecimal>> entry: values) {
-                    for(Entry<SliceKey, BigDecimal> e: entry.getValue().entrySet()) {
-                        if (e.getValue().signum() == 0) {
+            public Map<SliceKey, Double> collate(Iterable<Entry<SliceKey, Map<SliceKey,Double>>> values) {
+                Map<SliceKey, Double> result = new HashMap<SliceKey, Double>();
+                for(Entry<SliceKey, Map<SliceKey,Double>> entry: values) {
+                    for(Entry<SliceKey, Double> e: entry.getValue().entrySet()) {
+                        if (e.getValue() == 0) {
                             // ignore 0
                             continue;
                         }
-                        BigDecimal v = result.get(e.getKey());
+                        Double v = result.get(e.getKey());
                         if (v == null) {
                             result.put(e.getKey(), e.getValue());
                         }
                         else {
-                            v = v.add(e.getValue());
+                            v = v + e.getValue();
                             result.put(e.getKey(), v);
                         }                        
                     }                    
@@ -120,7 +119,7 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
         }
     }
     
-    private static class RFactory implements ReducerFactory<SliceKey, List<Position>, Map<SliceKey, BigDecimal>>, Serializable {
+    private static class RFactory implements ReducerFactory<SliceKey, List<Position>, Map<SliceKey, Double>>, Serializable {
         
         private final long timestamp;
         
@@ -129,8 +128,8 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
         }
 
         @Override
-        public Reducer<List<Position>, Map<SliceKey, BigDecimal>> newReducer(final SliceKey slice) {
-            return new Reducer<List<Position>, Map<SliceKey, BigDecimal>>() {
+        public Reducer<List<Position>, Map<SliceKey, Double>> newReducer(final SliceKey slice) {
+            return new Reducer<List<Position>, Map<SliceKey, Double>>() {
 
                 Map<Long, Position> surface = new HashMap<Long, Position>();
                 
@@ -148,11 +147,11 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
                 }
 
                 @Override
-                public Map<SliceKey, BigDecimal> finalizeReduce() {
-                    BigDecimal qty = new BigDecimal(0);
+                public Map<SliceKey, Double> finalizeReduce() {
+                    double qty = 0d;
                     for(Position pos: surface.values()) {
                         if (pos.isActive()) {
-                            qty = qty.add(new BigDecimal(pos.getQty()));
+                            qty = qty + pos.getQty();
                         }
                     }
                     
