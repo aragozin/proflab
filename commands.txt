@@ -10,3 +10,5 @@ java -jar sjk.jar ssa -f std.dump -tn ".*cached.*" -tf **!**.Unsafe.park --flame
 
 - Report serialization proportion in traces containing CachedExecutorService frame excluding traces with Unsafe.park call
 java -jar sjk.jar ssa -f std.dump --categorize -nc Serializtion=**.ByteArrayObjectDataOutput.writeObject Rest=**CachedExecutorService!**.Unsafe.park
+
+java -jar sjk.jar hh -p PID
