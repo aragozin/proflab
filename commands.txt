@@ -12,3 +12,10 @@ java -jar sjk.jar ssa -f std.dump -tn ".*cached.*" -tf **!**.Unsafe.park --flame
 java -jar sjk.jar ssa -f std.dump --categorize -nc Serializtion=**.ByteArrayObjectDataOutput.writeObject Rest=**CachedExecutorService!**.Unsafe.park
 
 java -jar sjk.jar hh -p PID
+
+-Xmx256m
+-XX:+UseConcMarkSweepGC
+-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution
+-XX:+PrintReferenceGC
+-XX:+PrintGCApplicationStoppedTime
+-Xloggc:gc.log
