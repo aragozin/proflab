@@ -47,7 +47,7 @@ public class HazelcastDemo {
 
     
     @Test
-    public void tesStresstPositionAggregation() throws FileNotFoundException, InterruptedException {
+    public void testStresstPositionAggregation() throws FileNotFoundException, InterruptedException {
 
         Config cfg = new FileSystemXmlConfig("node-conf.xml");
         Config cfgL = new FileSystemXmlConfig("node-conf-lite.xml");
