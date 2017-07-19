@@ -1,0 +1,24 @@
+[submodule "benches/hz_bench"]
+	path = benches/hz_bench
+	url = https://github.com/aragozin/proflab.git
+	branch = hz_demo_step_1
+[submodule "common/common-lib"]
+	path = common/common-lib
+	url = https://github.com/aragozin/proflab.git
+	branch = lib/common/master
+[submodule "benches/deadlock"]
+	path = benches/deadlock
+	url = https://github.com/aragozin/proflab.git
+	branch = bench/deadlock/master
+[submodule "benches/bias-sjk"]
+	path = benches/bias-sjk
+	url = https://github.com/aragozin/proflab.git
+	branch = bench/bias-sjk/master
+[submodule "benches/javaref"]
+	path = benches/javaref
+	url = https://github.com/aragozin/proflab.git
+	branch = bench/javaref/master
+[submodule "tools/sjk"]
+	path = tools/sjk
+	url = https://github.com/aragozin/proflab.git
+	branch = tool/sjk/master
