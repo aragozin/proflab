@@ -22,3 +22,6 @@
 	path = tools/sjk
 	url = https://github.com/aragozin/proflab.git
 	branch = tool/sjk/master
+[submodule "benches/optaplanner"]
+	path = benches/optaplanner
+	url = https://github.com/aragozin/optaplanner-bench
