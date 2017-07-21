@@ -3,7 +3,6 @@ package info.ragozin.perflab.hazelagg;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +65,7 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
                         }                        
                     }                    
                 }
-                return result;
+                return result.isEmpty() ? null : result;
             }
         };
     }
@@ -99,7 +98,7 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
 
         @Override
         public void map(final PositionKey key, final Position value, Context<SliceKey, Position> context) {
-            SliceKey mkey = new SliceKey(value.getBook(), value.getUnderlying(), value.getContract());
+            SliceKey mkey = new SliceKey(value.getBook(), null, null);
             context.emit(mkey, supplier.apply(new Map.Entry<PositionKey, Position>() {
 
                 @Override
@@ -149,14 +148,17 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
 
                 @Override
                 public Map<SliceKey, BigDecimal> finalizeReduce() {
-                    BigDecimal qty = new BigDecimal(0);
+                	Map<SliceKey, BigDecimal> result = new HashMap<SliceKey, BigDecimal>();
                     for(Position pos: surface.values()) {
                         if (pos.isActive()) {
+                        	SliceKey sk = new SliceKey(pos.book, pos.getUnderlying(), pos.getContract());
+                        	BigDecimal qty = result.containsKey(sk) ? result.get(sk) : new BigDecimal(0);                        	
                             qty = qty.add(new BigDecimal(pos.getQty()));
+                            result.put(sk, qty);
                         }
                     }
                     
-                    return Collections.singletonMap(slice, qty);
+                    return result;
                 }
             };
         }
@@ -179,6 +181,9 @@ public class PositionAggregation implements Aggregation<PositionKey, Position, M
 
                 @Override
                 public List<Position> finalizeChunk() {
+                	/* It seems like combiner may be reused, so it is better to reinitialise it */ 
+                	List<Position> positions = this.positions;
+                	this.positions = new ArrayList<Position>();
                     return positions;
                 }
             };
