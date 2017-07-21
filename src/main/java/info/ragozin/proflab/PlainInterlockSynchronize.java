@@ -41,12 +41,12 @@ public class PlainInterlockSynchronize implements Runnable {
 
         @Override
         public int spinFactor() {
-            return 50; // micros
+            return 1; // micros
         }
 
         @Override
         public int cycleCount() {
-            return 100;
+            return 20;
         }
     }
 
@@ -124,6 +124,7 @@ public class PlainInterlockSynchronize implements Runnable {
                 workerLoop();
             }
         }, name + "-" + n);
+        t.setDaemon(true);
         return t;
     }
 
@@ -159,20 +160,9 @@ public class PlainInterlockSynchronize implements Runnable {
             ContentionResource<Void> lock = resources[rnd.nextInt(resources.length)];
 //            System.out.println("[" + Thread.currentThread().getName() + "] lock " + lock);
             synchronized (lock) {
-                spinMicros();
+                Spinner.spinMicros(spinFactor);
                 lockIn(rnd, n - 1);
             }
         }
-    }
-    
-    protected double spinMicros() {
-        long deadline = System.nanoTime() + spinFactor * 1000;
-        double x = 1.000001;
-        while(deadline < System.nanoTime()) {
-            for(int i = 0; i != 1000; ++i) {
-                x = x * x;
-            }
-        }
-        return x;
     }
 }

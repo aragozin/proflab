@@ -16,7 +16,7 @@ public class CorruptedHashMapInterlock implements Runnable {
         
         public int putBatchSize();
 
-        public int spinFactor();
+        public float spinFactor();
         
         public int cycleCount();
         
@@ -31,12 +31,12 @@ public class CorruptedHashMapInterlock implements Runnable {
 
         @Override
         public int putBatchSize() {
-            return 500;
+            return 2000;
         }
 
         @Override
-        public int spinFactor() {
-            return 200;
+        public float spinFactor() {
+            return 0.2f;
         }
 
         @Override
@@ -51,7 +51,7 @@ public class CorruptedHashMapInterlock implements Runnable {
     private final CyclicBarrier jobBarrier = new CyclicBarrier(2);
     
     private final int putBatchSize;
-    private final int spinFactor;
+    private final float spinFactor;
     private final int cycleCount;
     
     private int cycle;
@@ -114,6 +114,7 @@ public class CorruptedHashMapInterlock implements Runnable {
                 workerLoop();
             }
         }, name + "-" + n);
+        t.setDaemon(true);
         return t;
     }
 
@@ -149,62 +150,7 @@ public class CorruptedHashMapInterlock implements Runnable {
         for(int i = 0; i != putBatchSize; ++i) {
             int key = rnd.nextInt(putBatchSize * threads.length);
             unsafeMap.put(key, Thread.currentThread().getName() + "-step-" + i);
-            spinMicros();
+            Spinner.spinMicros(spinFactor);
         }
     }
-
-//    private void readMap(Random rnd) {
-//        for(int i = 0; i != putBatchSize; ++i) {
-//            Integer key = rnd.nextInt(putBatchSize * threads.length);
-//            unsafeMap.get(key);
-//            spin();
-//        }
-//    }
-//    
-    protected double spinMicros() {
-        long deadline = System.nanoTime() + spinFactor * 1000;
-        double x = 1.000001;
-        while(deadline < System.nanoTime()) {
-            for(int i = 0; i != 1000; ++i) {
-                x = x * x;
-            }
-        }
-        return x;
-    }
-    
-//    private static class MapKey {
-//        
-//        private final int key;
-//
-//        public MapKey(int key) {
-//            this.key = key;
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            final int prime = 31;
-//            int result = 1;
-//            result = prime * result + key;
-//            return result;
-//        }
-//
-//        @Override
-//        public boolean equals(Object obj) {
-//            if (this == obj)
-//                return true;
-//            if (obj == null)
-//                return false;
-//            if (getClass() != obj.getClass())
-//                return false;
-//            MapKey other = (MapKey) obj;
-//            if (key != other.key)
-//                return false;
-//            return true;
-//        }
-//        
-//        @Override
-//        public String toString() {
-//            return String.valueOf(key);
-//        }        
-//    }
 }

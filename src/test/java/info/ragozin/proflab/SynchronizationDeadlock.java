@@ -17,13 +17,5 @@ public class SynchronizationDeadlock {
         });
         
         new DemoRunner(pis);
-        
-//        int c = 0;
-//        while(true) {
-//            long n = System.currentTimeMillis();
-//            pis.run();
-//            long time = System.currentTimeMillis() - n;
-//            System.out.println("Batch " + (++c) + " completed in " + time + "ms");
-//        }        
     }
 }

@@ -42,12 +42,12 @@ public class PlainInterlockReenterantLock implements Runnable {
 
         @Override
         public int spinFactor() {
-            return 50;
+            return 1;
         }
 
         @Override
         public int cycleCount() {
-            return 100;
+            return 20;
         }
     }
 
@@ -125,6 +125,7 @@ public class PlainInterlockReenterantLock implements Runnable {
                 workerLoop();
             }
         }, name + "-" + n);
+        t.setDaemon(true);
         return t;
     }
 
@@ -158,26 +159,14 @@ public class PlainInterlockReenterantLock implements Runnable {
     protected void lockIn(Random rnd, int n) {
         if (n > 0) {
             ContentionResource<ReentrantLock> lock = resources[rnd.nextInt(resources.length)];
-//            System.out.println("[" + Thread.currentThread().getName() + "] lock " + lock);
             lock.lock().lock();
             try {
-                spinMicros();
+                Spinner.spinMicros(spinFactor);
                 lockIn(rnd, n - 1);
             }
             finally {
                 lock.lock().unlock();
             }
         }
-    }
-    
-    protected double spinMicros() {
-        long deadline = System.nanoTime() + spinFactor * 1000;
-        double x = 1.000001;
-        while(deadline < System.nanoTime()) {
-            for(int i = 0; i != 1000; ++i) {
-                x = x * x;
-            }
-        }
-        return x;
     }
 }
