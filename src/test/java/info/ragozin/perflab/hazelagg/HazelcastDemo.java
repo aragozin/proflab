@@ -103,7 +103,12 @@ public class HazelcastDemo {
             Map<SliceKey, BigDecimal> data = cacheL.aggregate(PositionAggregation.sliceSupplier(SliceKey.book(book)), new PositionAggregation(ts));
             
             time = System.currentTimeMillis() - time;
-            System.out.println("Book [" + book + "] at " + time + "ms -> " + data.size() + " slices");
+            if (data == null) {
+            	System.out.println("Book [" + book + "] at " + time + "ms -> no data");
+            }
+            else {
+            	System.out.println("Book [" + book + "] at " + time + "ms -> " + data.size() + " slices");
+            }
         }
         
     }
