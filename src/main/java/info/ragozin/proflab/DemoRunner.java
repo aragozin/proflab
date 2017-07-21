@@ -1,7 +1,5 @@
 package info.ragozin.proflab;
 
-import java.io.IOException;
-
 public class DemoRunner {
 
     public DemoRunner(final Runnable task) {
@@ -49,20 +47,16 @@ public class DemoRunner {
             }
         };
         
+        thread.setName(task.getClass().getSimpleName());
+        thread.setDaemon(true);
         thread.start();
         
         try {
-            StringBuilder sb = new StringBuilder();
-            while(true) {
-                int n = System.in.read();
-                sb.append((char)n);
-                if (n < 0 || sb.toString().toLowerCase().endsWith("end")) {
-                    System.err.println("Aborted by console");
-                    System.exit(1);
-                }
-            }
+        	while(true) {
+        		Thread.sleep(1000);
+        	}
         }
-        catch(IOException e) {
+        catch(Exception e) {
             e.printStackTrace();
         }    
     }    
