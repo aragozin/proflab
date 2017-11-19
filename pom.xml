@@ -29,6 +29,7 @@
   <groupId>info.ragozin.proflab</groupId>
   <artifactId>grid-bench</artifactId>
   <version>0.1-SNAPSHOT</version>
+  <name>${project.groupId}::${project.artifactId}</name>
   <description>Hazelcast demo</description>
   <packaging>jar</packaging>
 

@@ -1,0 +1,1 @@
+git checkout hz_demo_step_2 && git rebase hz_demo_step_1 && git push -f origin HEAD:hz_demo_step_2 && echo "Rebased hz_demo_step_2" && git checkout hz_demo_step_3 && git rebase hz_demo_step_2 && git push -f origin HEAD:hz_demo_step_3 && echo "Rebased hz_demo_step_3"
