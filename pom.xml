@@ -27,16 +27,10 @@
   </parent>
 
   <groupId>info.ragozin.proflab</groupId>
-  <artifactId>proflab-pom</artifactId>
+  <artifactId>grid-bench</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>${project.groupId}::${project.artifactId}</name>
-  <description>Profiling Lab (root pom)</description>
-  <packaging>pom</packaging>
-
-  <modules>
-    <!--<module>rfq</module>-->
-    <module>grid-bench</module>
-  </modules>
+  <description>Hazelcast demo</description>
+  <packaging>jar</packaging>
 
   <licenses>
     <license>
@@ -54,12 +48,94 @@
     </developer>
   </developers>
 
-  <scm>
-    <connection>scm:git:https://github.com/aragozin/proflab.git</connection>
-    <developerConnection>scm:git:https://github.com/aragozin/proflab.git</developerConnection>
-    <url>https://github.com/aragozin/proflab</url>
-    <tag>HEAD</tag>
-  </scm>
+  <properties>
+    <btrace.version>2.0.1-nimble</btrace.version>    
+    <nanocloud.version>0.8.11</nanocloud.version>
+    <nimble.version>0.2.4</nimble.version>
+  </properties>
+   
+  <dependencies>
+
+    <dependency>
+      <groupId>org.gridkit.lab</groupId>
+      <artifactId>telecontrol-ssh</artifactId>
+      <version>${nanocloud.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gridkit.lab</groupId>
+      <artifactId>nimble-core</artifactId>
+      <version>${nimble.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.gridkit.lab</groupId>
+          <artifactId>telecontrol-ssh</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.gridkit.lab</groupId>
+          <artifactId>viconcurrent</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gridkit.lab</groupId>
+      <artifactId>probe-sigar</artifactId>
+      <version>${nimble.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.gridkit.lab</groupId>
+          <artifactId>viconcurrent</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.carrotsearch</groupId>
+      <artifactId>junit-benchmarks</artifactId>
+      <version>0.7.2</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>1.6.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>3.7.1</version>
+    </dependency>
+        
+    <dependency>
+      <groupId>com.esotericsoftware</groupId>
+      <artifactId>kryo</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+        
+    <dependency>
+      <groupId>org.gridkit.3rd.btrace</groupId>
+      <artifactId>ext-default</artifactId>
+      <version>${btrace.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gridkit.3rd.btrace</groupId>
+      <artifactId>ext-profiling</artifactId>
+      <version>${btrace.version}</version>
+    </dependency>
+        
+  </dependencies>
 
   <build>
     <pluginManagement>
@@ -69,8 +145,8 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.0</version>
           <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <source>1.7</source>
+            <target>1.7</target>
           </configuration>
         </plugin>
         <plugin>
@@ -85,7 +161,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.14</version>
+          <version>2.20.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -124,4 +200,26 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <id>bench</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <includes>
+                <incude>**/HazelcastDemoStarter.java</incude>
+              </includes>
+              <argLine>-Xmx512m</argLine>              
+              <shutdown>kill</shutdown>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>    
+    </profile>
+  </profiles>
+
 </project>

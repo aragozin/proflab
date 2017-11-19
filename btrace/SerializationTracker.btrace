@@ -1,0 +1,15 @@
+// This is BTrace 1 script, will not run with BTrace2
+
+import com.sun.btrace.annotations.*;
+import static com.sun.btrace.BTraceUtils.*;
+
+@BTrace
+public class SerializationTracker {
+	
+  @OnMethod(clazz="java.io.ObjectOutputStream", method="writeObject")
+  public static void interpect(Object param) {
+      if (param != null) {
+          println(name(classOf(param)));
+      }
+  }
+}

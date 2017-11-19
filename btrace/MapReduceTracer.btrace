@@ -1,0 +1,70 @@
+// This is BTrace 1 script, will not run with BTrace2
+
+import com.sun.btrace.annotations.*;
+import com.sun.btrace.Profiler;
+import static com.sun.btrace.BTraceUtils.*;
+import static com.sun.btrace.BTraceUtils.Profiling.*;
+
+@BTrace 
+public class MapReduceTracer {
+
+    @Property
+    static Profiler profiler = newProfiler();
+    
+    @OnMethod(
+        clazz="com.hazelcast.mapreduce.impl.task.JobSupervisor", 
+        method="getReducerAddressByKey"
+        )
+    public static void entryJobS(@ProbeMethodName(fqn=false) String probeMethod) { 
+        recordEntry(profiler, probeMethod);
+    }
+    
+    @OnMethod(
+        clazz="com.hazelcast.mapreduce.impl.task.JobSupervisor", 
+        method="getReducerAddressByKey",
+        location=@Location(value=Kind.RETURN)
+    )
+    public static void exitJobS(@ProbeMethodName(fqn=false) String probeMethod, @Duration long duration) { 
+        recordExit(profiler, probeMethod, duration);
+    }
+
+    @OnMethod(
+        clazz="java.util.concurrent.ConcurrentHashMap", 
+        method="get"
+        )
+    public static void entryMap(@ProbeMethodName(fqn=false) String probeMethod) { 
+        recordEntry(profiler, probeMethod);
+    }
+    
+    @OnMethod(
+        clazz="java.util.concurrent.ConcurrentHashMap", 
+        method="get",
+        location=@Location(value=Kind.RETURN)
+    )
+    public static void exitMap(@ProbeMethodName(fqn=false) String probeMethod, @Duration long duration) { 
+        recordExit(profiler, probeMethod, duration);
+    }
+
+    @OnMethod(
+        clazz="com.hazelcast.mapreduce.impl.task.MapCombineTask", 
+        method="processPartitionMapping",
+        )
+    public static void entryCombine(@ProbeMethodName(fqn=false) String probeMethod) { 
+        recordEntry(profiler, probeMethod);
+    }
+    
+    @OnMethod(
+        clazz="com.hazelcast.mapreduce.impl.task.MapCombineTask", 
+        method="processPartitionMapping",
+        location=@Location(value=Kind.RETURN)
+    )
+    public static void exitCombine(@ProbeMethodName(fqn=false) String probeMethod, @Duration long duration) { 
+        recordExit(profiler, probeMethod, duration);
+    }
+                
+    @OnTimer(10000)
+    public static void timer() {
+        printSnapshot("Hazelcast tracing", profiler);
+    }
+}
+
