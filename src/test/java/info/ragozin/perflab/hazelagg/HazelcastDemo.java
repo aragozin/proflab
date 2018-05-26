@@ -88,7 +88,7 @@ public class HazelcastDemo {
         System.out.println("Data generated");
         System.out.println("Data -> " + cacheL.aggregate(PositionAggregation.all(), new PositionAggregation(110)));
 
-        for(int i = 0; i != 1000; ++i) {
+        while(true) {
 
             String book = "B" + rnd.nextInt(100);
             long ts = rnd.nextInt(100);
@@ -98,9 +98,13 @@ public class HazelcastDemo {
             Map<SliceKey, BigDecimal> data = cacheL.aggregate(PositionAggregation.sliceSupplier(SliceKey.book(book)), new PositionAggregation(ts));
             
             time = System.currentTimeMillis() - time;
-            System.out.println("Book [" + book + "] at " + time + "ms -> " + data.size() + " slices");
-        }
-        
+            if (data == null) {
+            	System.out.println("Book [" + book + "] at " + time + "ms -> no data");
+            }
+            else {
+            	System.out.println("Book [" + book + "] at " + time + "ms -> " + data.size() + " slices");
+            }
+        }        
     }
     
     private void update(IMap<PositionKey, Position> cache, Position event) {

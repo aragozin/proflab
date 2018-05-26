@@ -47,7 +47,7 @@ public class MapReduceTracer {
 
     @OnMethod(
         clazz="com.hazelcast.mapreduce.impl.task.MapCombineTask", 
-        method="processPartitionMapping",
+        method="processPartitionMapping"
         )
     public static void entryCombine(@ProbeMethodName(fqn=false) String probeMethod) { 
         recordEntry(profiler, probeMethod);
