@@ -100,6 +100,7 @@
               </includes>
               <forkedProcessExitTimeoutInSeconds>10</forkedProcessExitTimeoutInSeconds>
               <shutdown>exit</shutdown>
+              <argLine>${jvm-options}</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -119,6 +120,7 @@
               </includes>
               <forkedProcessExitTimeoutInSeconds>10</forkedProcessExitTimeoutInSeconds>
               <shutdown>exit</shutdown>
+              <argLine>${jvm-options}</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -138,6 +140,7 @@
               </includes>
               <forkedProcessExitTimeoutInSeconds>10</forkedProcessExitTimeoutInSeconds>
               <shutdown>exit</shutdown>
+              <argLine>${jvm-options}</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -157,10 +160,17 @@
               </includes>
               <forkedProcessExitTimeoutInSeconds>10</forkedProcessExitTimeoutInSeconds>
               <shutdown>exit</shutdown>
+              <argLine>${jvm-options}</argLine>
             </configuration>
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>jfr</id>
+      <properties>
+        <jvm-options>-XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:StartFlightRecording=duration=30s,name=MyRecording,filename=myrecording.jfr,settings=${project.basedir}/proflab.jfc</jvm-options>
+      </properties>
     </profile>
   </profiles>
 
