@@ -33,12 +33,6 @@
   <dependencies>
 
     <dependency>
-      <groupId>info.ragozin.proflab</groupId>
-      <artifactId>common-lib</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.10</version>
