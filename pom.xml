@@ -32,16 +32,10 @@
   <dependencies>
 
     <dependency>
-      <groupId>info.ragozin.proflab</groupId>
-      <artifactId>common-lib</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.gridkit.jvmtool</groupId>
       <artifactId>sjk-stacktrace</artifactId>
       <version>0.4.0</version>
-    </dependency>    
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
