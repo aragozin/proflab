@@ -1,0 +1,24 @@
+﻿var summary = {};
+
+length(map(
+	filter(
+	    heap.objects(heap.findClass("java.lang.ref.Finalizer")),
+	    function(f) {
+	        return !identical(f, f.next);
+	    }
+	),
+    function(f) {
+        var cname = f.referent.clazz.name
+        var rsize = rsizeof(f.referent);
+        if (!summary[cname]) {
+            summary[cname] = {name: cname, count: 1, rsize: rsize};
+        }
+        else {
+            summary[cname].count++;
+            summary[cname].rsize += rsize;
+        }
+        return rsizeof(f.referent);
+    }
+));
+
+summary;
